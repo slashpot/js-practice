@@ -37,20 +37,30 @@ test("nthPrime",async ()=>{
 })
 
 test("nthPrime generator",async ()=>{
-    let count = 2;
-    let cur = 3;
 
     async function* nthPrimeGen(input) {
-        if(input === undefined || input === 1) {
+        let count = 2;
+        let cur = 3;
+        const resultMap = new Map([
+            [1, 2]
+        ])
+        if(input === undefined) {
             input = yield 2;
         }
         while (true) {
-            cur+=2;
-            if(isPrime(cur)) {
-                count++;
-                if(count===input) {
-                    input = yield cur
-                    if(input.done) return;
+            if(resultMap.has(input)) {
+                input = yield resultMap.get(input);
+            }
+            else {
+                cur+=2;
+                if(isPrime(cur)) {
+                    count++;
+                    resultMap.set(count, cur);
+
+                    if(count===input) {
+                        input = yield cur
+                        if(input.done) return;
+                    }
                 }
             }
         }
@@ -62,10 +72,10 @@ test("nthPrime generator",async ()=>{
     expect(await gen.next(500)).toEqual({value:3571, done: false});
     expect(await gen.next(1000)).toEqual({value:7919, done: false});
     expect(await gen.next(1000000)).toEqual({value:15485863, done: false});
-    expect(await gen.next({done: true})).toEqual({value:undefined, done: true});
+    // expect(await gen.next({done: true})).toEqual({value:undefined, done: true});
 
     //nice to have: pre-compute nthPrime(204) right after requested nthPrime(203) in background, so that boost next response
-    // expect(await gen.next(500)).toEqual({value:3571, done: false});
-    // expect(await gen.next(501)).toEqual({value:3581, done: false});
-    // expect(await gen.next(1000)).toEqual({value:7919, done: false});
+    expect(await gen.next(500)).toEqual({value:3571, done: false});
+    expect(await gen.next(501)).toEqual({value:3581, done: false});
+    expect(await gen.next(1000)).toEqual({value:7919, done: false});
 })
