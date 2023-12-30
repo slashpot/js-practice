@@ -13,7 +13,6 @@ function isPrime(input) {
 }
 
 test("nthPrime",async ()=>{
-
     let count = 2;
     let cur = 3;
 
@@ -37,7 +36,6 @@ test("nthPrime",async ()=>{
 })
 
 test("nthPrime generator",async ()=>{
-
     async function* nthPrimeGen(input) {
         let count = 2;
         let cur = 3;
@@ -57,8 +55,8 @@ test("nthPrime generator",async ()=>{
                     count++;
                     resultMap.set(count, cur);
 
-                    if(count===input) {
-                        input = yield cur
+                    if(count===input+1) {
+                        input = yield resultMap.get(input)
                         if(input.done) return;
                     }
                 }
