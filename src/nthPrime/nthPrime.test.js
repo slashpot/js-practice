@@ -12,10 +12,12 @@ test("nthPrime",async ()=>{
 
         return true;
     }
+
+    let count = 2;
+    let cur = 3;
+
     async function nthPrime(input) {
         if(input === 1) return 2;
-        let count = 2;
-        let cur = 3;
         while (count !== input) {
             cur+=2;
             if(isPrime(cur)){
@@ -24,10 +26,30 @@ test("nthPrime",async ()=>{
         }
         return cur;
     }
+
     expect(await nthPrime(1)).toBe(2)
     expect(await nthPrime(2)).toBe(3)
     expect(await nthPrime(3)).toBe(5)
     expect(await nthPrime(20)).toBe(71)
     expect(await nthPrime(500000)).toBe(7368787)
     expect(await nthPrime(1000000)).toBe(15485863)
+})
+
+test("nthPrime generator",async ()=>{
+    function* nthPrimeGen() {
+
+    }
+
+    //Use Generator to find nth prime number and do not blocking main thread(try not to use worker)
+    const gen = nthPrimeGen(1);
+    expect(await gen.next()).toEqual({value:2, done: false});
+    expect(await gen.next(500)).toEqual({value:3571, done: false});
+    expect(await gen.next(1000)).toEqual({value:7919, done: false});
+    expect(await gen.next(1000000)).toEqual({value:15485863, done: false});
+    expect(await gen.next({done: true})).toEqual({value:undefined, done: true});
+
+    //nice to have: pre-compute nthPrime(204) right after requested nthPrime(203) in background, so that boost next response
+    expect(await gen.next(500)).toEqual({value:3571, done: false});
+    expect(await gen.next(501)).toEqual({value:3581, done: false});
+    expect(await gen.next(1000)).toEqual({value:7919, done: false});
 })
