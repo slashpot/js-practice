@@ -3,23 +3,9 @@ import {test, expect} from "vitest";
 test('batch: ',async()=>{
     let executeCount = 0;
     const batch = (func) => {
-        return async function(...args){
-            while(executeCount === 1) {
-                await delay(100)
-            }
-            const output = func.apply(this,args);
-            executeCount = 0;
-            return output;
-        }
-    };
+        //TODO
 
-    function delay(num) {
-        return new Promise((resolve) => {
-            setTimeout(()=>{
-                resolve();
-            },num);
-        })
-    }
+    };
 
     const batchedFunc = batch((nums) => {
         executeCount++;
