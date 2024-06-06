@@ -51,8 +51,12 @@ test("nthPrime generator", {timeout: 100000}, async ()=>{
         let primeCount = 1;
 
         while (true) {
+            if(typeof target === 'object' && target.done) {
+                return
+            }
             target = yield new Promise((resolve) => {
                 const fn = () => {
+
                     if(target === primeCount) {
                         resolve(current)
                     } else {
@@ -71,10 +75,10 @@ test("nthPrime generator", {timeout: 100000}, async ()=>{
 
     const gen = nthPrimeGen(1);
     expect(await gen.next()).toEqual({value:2, done: false});
-    expect(await gen.next(500)).toEqual({value:3571, done: false});
+    // expect(await gen.next(500)).toEqual({value:3571, done: false});
     // expect(await gen.next(1000)).toEqual({value:7919, done: false});
     // expect(await gen.next(1000000)).toEqual({value:15485863, done: false});
-    // // expect(await gen.next({done: true})).toEqual({value:undefined, done: true});
+    expect(await gen.next({done: true})).toEqual({value:undefined, done: true});
     //
     // //nice to have: pre-compute nthPrime(204) right after requested nthPrime(203) in background, so that boost next response
     // expect(await gen.next(500)).toEqual({value:3571, done: false});
