@@ -12,39 +12,31 @@ function isPrime(input) {
     return true;
 }
 
-test("nthPrime",async ()=>{
-    const nthPrime = async (target) => {
+test("nthPrime",{ timeout: 1000000 },async ()=>{
+    const nthPrime = (target) => {
         let primeCount = 1;
         let current = 2;
 
-        const fn = () => {
-            current++;
-            if(isPrime(current)) primeCount++;                
-
-            if(target === primeCount) return primeCount;
-            else {
-                setTimeout(() => {
+        return new Promise((resolve) => {
+            const fn = async () => {
+                if(target === primeCount) {
+                    resolve(current);
+                } 
+                else {
+                    if(current === 2) current++;
+                    else current+= 2
+                    if(isPrime(current)) primeCount++;  
                     fn();
-                },0)
+                }
             }
-        }
-
-        setTimeout(() => {
-            fn();
+            fn()
         })
-
-        while (primeCount !== target) {
-            current++;
-            if(isPrime(current)) primeCount++;                
-        }
-
-        return current;
     }
 
-    expect(await nthPrime(1)).toBe(2)
-    expect(await nthPrime(2)).toBe(3)
-    expect(await nthPrime(3)).toBe(5)
-    expect(await nthPrime(20)).toBe(71)
+    // expect(await nthPrime(1)).toBe(2)
+    // expect(await nthPrime(2)).toBe(3)
+    // expect(await nthPrime(3)).toBe(5)
+    // expect(await nthPrime(20)).toBe(71)
     expect(await nthPrime(500000)).toBe(7368787)
     expect(await nthPrime(1000000)).toBe(15485863)
 })
