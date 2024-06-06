@@ -18,15 +18,17 @@ test("nthPrime",{ timeout: 1000000 },async ()=>{
         let current = 2;
 
         return new Promise((resolve) => {
-            const fn = async () => {
+            const fn = () => {
                 if(target === primeCount) {
                     resolve(current);
-                } 
+                }
                 else {
                     if(current === 2) current++;
                     else current+= 2
-                    if(isPrime(current)) primeCount++;  
-                    fn();
+                    if(isPrime(current)) primeCount++;
+                    setTimeout(() => {
+                        fn()
+                    },0)
                 }
             }
             fn()
