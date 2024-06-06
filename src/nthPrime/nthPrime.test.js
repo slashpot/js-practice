@@ -13,18 +13,32 @@ function isPrime(input) {
 }
 
 test("nthPrime",async ()=>{
-    let count = 2;
-    let cur = 3;
+    const nthPrime = async (target) => {
+        let primeCount = 1;
+        let current = 2;
 
-    async function nthPrime(input) {
-        if(input === 1) return 2;
-        while (count !== input) {
-            cur+=2;
-            if(isPrime(cur)){
-                count++
+        const fn = () => {
+            current++;
+            if(isPrime(current)) primeCount++;                
+
+            if(target === primeCount) return primeCount;
+            else {
+                setTimeout(() => {
+                    fn();
+                },0)
             }
         }
-        return cur;
+
+        setTimeout(() => {
+            fn();
+        })
+
+        while (primeCount !== target) {
+            current++;
+            if(isPrime(current)) primeCount++;                
+        }
+
+        return current;
     }
 
     expect(await nthPrime(1)).toBe(2)
