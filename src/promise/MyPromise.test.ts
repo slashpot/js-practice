@@ -4,16 +4,17 @@ import {MyPromise} from "./MyPromise.js";
 describe('promise implementation' , () => {
     it('should execute callback when create Promise', () => {
         let val = 0;
-        new MyPromise((resolve) => {
+        const p = new MyPromise((resolve) => {
             val++;
             resolve()
         })
+        expect(p instanceof MyPromise).toBe(true)
         expect(val).toBe(1)
     })
 
-    it('should get promise when reject in callback', () => {
-        const p = new MyPromise((_, reject) => {
-            reject('rejected')
+    it('should get promise when got exception in callback', () => {
+        const p = new MyPromise(() => {
+            throw new Error('error')
         })
 
         expect(p instanceof MyPromise).toBe(true)
@@ -57,6 +58,32 @@ describe('promise implementation' , () => {
 
         p.then((x) => {
             expect(x).toBe(1)
+        })
+    })
+
+    it('should got rejected when promise was rejected', () => {
+        const p = new MyPromise((_, reject) => {
+            reject('error')
+        })
+
+        p.then((_) => {
+
+        }, (rejected) => {
+            expect(rejected).toBe('error')
+        })
+    })
+
+    it('should got rejected when promise was rejected using setTimeOut', () => {
+        const p = new MyPromise((_, reject) => {
+            setTimeout(() => {
+                reject('error')
+            })
+        })
+
+        p.then((_) => {
+
+        }, (rejected) => {
+            expect(rejected).toBe('error')
         })
     })
 })

@@ -1,6 +1,7 @@
 
 export class MyPromise {
     private onFulfilled: ((fulfilled: any) => void) | undefined
+    private onRejected: ((rejected: any) => void) | undefined;
 
     constructor(callback: (resolve: (resolved?: any) => void, reject: (rejected?: any) => void) => void) {
         const resolve = (resolved?: any ) => {
@@ -8,7 +9,7 @@ export class MyPromise {
         }
 
         const reject = (rejected: any) => {
-
+            this.onRejected?.(rejected)
         }
 
         try {
@@ -18,8 +19,9 @@ export class MyPromise {
         }
     }
 
-    then(onFulfilled: (fulfilled: any) => void, onRejected?: () => void) {
-        this.onFulfilled=onFulfilled
+    then(onFulfilled: (fulfilled: any) => void, onRejected?: (rejected: any) => void) {
+        this.onFulfilled=onFulfilled;
+        this.onRejected = onRejected
     }
 }
 
